@@ -32,6 +32,7 @@ public:
 	const int getWidth();
 	const int getHeight();
 	void visitField(const int x, const int y);
+	void hideAllFields();
 private:
 	void allocateMap();
 	int getNumberOfAdjacentFields(const int x, const int y);

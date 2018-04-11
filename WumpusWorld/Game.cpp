@@ -95,14 +95,14 @@ void Game::handleEvents() {
 		break;
 	case NEW_GAME:
 		// start over same map
-		initTime();
+		newGame();
 		break;
 	case START_BOT:
 		// launch bot
 		break;
 	case NEW_MAP:
 		// generate new map
-		initTime();
+		newMap();
 		break;
 	case QUIT:
 		quit = true;
@@ -184,4 +184,19 @@ Coord Game::mapToWindowCoords(const int x, const int y) {
 	c.x = x * 64 + (SCREEN_HEIGHT / 3) + ((768 - (gameMap_->getWidth()) * 64) / 2);
 	c.y = y * 64 + ((SCREEN_HEIGHT - (gameMap_->getHeight()) * 64) / 2);
 	return c;
+}
+
+void Game::newGame() {
+	initTime();
+	gameMap_->hideAllFields();
+	
+	player_->setOnStartPosition();
+}
+
+void Game::newMap() {
+	initTime();
+	delete gameMap_;
+	gameMap_ = new Map(this);
+	
+	player_->setOnStartPosition();
 }

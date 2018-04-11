@@ -69,6 +69,12 @@ Rotation Player::getRotation() {
 	return rotation;
 }
 
+void Player::setOnStartPosition() {
+	x = 0;
+	y = selfGame_->getMap()->getHeight() - 1;
+	rotation = DOWN;
+}
+
 int Player::getX() {
 	return x;
 }

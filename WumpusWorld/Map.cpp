@@ -45,6 +45,17 @@ void Map::visitField(const int x, const int y) {
 	field_[y][x].visited = true;
 }
 
+/* makes all fields except starting unvisited */
+void Map::hideAllFields() {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			field_[i][j].visited = false;
+		}
+	}
+
+	visitField(0, height - 1);
+}
+
 void Map::allocateMap() {
 	field_ = new Field*[height];
 	for (int i = 0; i < height; i++) {

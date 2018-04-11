@@ -18,6 +18,9 @@ public:
 	void turn(bool clockwise);
 	void visitField(const int x, const int y);
 	Rotation getRotation();
+
+	void setOnStartPosition();
+
 	int getX();
 	int getY();
 private:

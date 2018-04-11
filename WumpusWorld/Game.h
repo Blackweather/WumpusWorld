@@ -29,6 +29,9 @@ public:
 	void freespace();
 
 	bool init();
+	
+	// no usage for now, maybe later
+	// just for fun
 	void initTime();
 
 	void gameLoop();
@@ -40,6 +43,9 @@ public:
 
 	void spawnPlayer();
 	void killPlayer();
+
+	void newGame();
+	void newMap();
 private:
 	void drawMap();
 	void drawMenu();
