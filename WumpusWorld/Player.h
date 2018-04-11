@@ -29,5 +29,5 @@ private:
 	bool alive;
 	Rotation rotation;
 };
-// zmiana
+
 #endif // !PLAYER_H

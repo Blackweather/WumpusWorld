@@ -1,11 +1,10 @@
-﻿Build started 2018-04-11 20:47:00.
+﻿Build started 2018-04-11 21:31:10.
      1>Project "C:\Users\Wojciech\Documents\GitHub\WumpusWorld\WumpusWorld\WumpusWorld.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /IC:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\sdl2_image.v140.2.0.1\build\native\../..//build/native/include/ /I"C:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include" /IC:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\sdl2.v140.2.0.4\build\native\../..//build/native/include/ /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp InputHandler.cpp main.cpp Map.cpp Player.cpp SDLHandler.cpp
-         SDLHandler.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /IC:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\sdl2_image.v140.2.0.1\build\native\../..//build/native/include/ /I"C:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include" /IC:\Users\Wojciech\Documents\GitHub\WumpusWorld\packages\sdl2.v140.2.0.4\build\native\../..//build/native/include/ /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp InputHandler.cpp Map.cpp Player.cpp main.cpp
+         main.cpp
          Player.cpp
          Map.cpp
-         main.cpp
          InputHandler.cpp
          Game.cpp
          Generowanie kodu...
@@ -16,9 +15,10 @@
          Debug\Map.obj
          Debug\Player.obj
          Debug\SDLHandler.obj
+         LINK : nie znaleziono elementu C:\Users\Wojciech\Documents\GitHub\WumpusWorld\Debug\WumpusWorld.exe ani nie został on skompilowany podczas ostatniego konsolidowania przyrostowego; zostanie wykonana pełna konsolidacja
          WumpusWorld.vcxproj -> C:\Users\Wojciech\Documents\GitHub\WumpusWorld\Debug\WumpusWorld.exe
      1>Done Building Project "C:\Users\Wojciech\Documents\GitHub\WumpusWorld\WumpusWorld\WumpusWorld.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:01:38.02
+Time Elapsed 00:00:54.98
