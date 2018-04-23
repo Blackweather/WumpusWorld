@@ -94,6 +94,7 @@ void Game::handleEvents() {
 		}
 		if (player_->isDead()) {
 			changeScore(-100);
+			SDL_Delay(2000);
 			newMap();
 		}
 		break;
