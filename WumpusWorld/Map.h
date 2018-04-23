@@ -33,6 +33,9 @@ public:
 	const int getHeight();
 	void visitField(const int x, const int y);
 	void hideAllFields();
+	void stealGold(const int x, const int y);
+	bool checkIfMonster(const int x, const int y);
+	void killMonster(const int x, const int y);
 private:
 	void allocateMap();
 	int getNumberOfAdjacentFields(const int x, const int y);
