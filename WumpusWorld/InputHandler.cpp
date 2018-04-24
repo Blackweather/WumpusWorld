@@ -3,7 +3,7 @@
 InputHandler::InputHandler() {}
 
 InputHandler::~InputHandler() {}
-//to jest sciety komentarz
+
 Event InputHandler::handleKeyStates() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {

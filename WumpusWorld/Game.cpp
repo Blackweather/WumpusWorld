@@ -70,8 +70,26 @@ void Game::update() {
 
 	// draw player
 	drawPlayer();
-
 	sdlHandler->render();
+	if (player_->isVictorious()) {
+		changeScore(1000);
+		drawMenu();
+		sdlHandler->render();
+		SDL_Delay(700);
+		newMap();
+		// end playing current map
+		// call victory menu
+		// wait
+		// prompt for restart (3s - new map)
+		// less than 3s - can choose (new map or same map)
+	}
+	if (player_->isDead()) {
+		changeScore(-100);
+		drawMenu();
+		sdlHandler->render();
+		SDL_Delay(700);
+		newMap();
+	}
 	handleEvents();
 }
 
@@ -82,20 +100,6 @@ void Game::handleEvents() {
 		// move character forward
 		if (player_->move()) {
 			changeScore(-1);
-		}
-		if (player_->isVictorious()) {
-			changeScore(1000);
-			newMap();
-			// end playing current map
-			// call victory menu
-			// wait
-			// prompt for restart (3s - new map)
-			// less than 3s - can choose (new map or same map)
-		}
-		if (player_->isDead()) {
-			changeScore(-100);
-			SDL_Delay(2000);
-			newMap();
 		}
 		break;
 	case TURN_LEFT:
@@ -181,7 +185,7 @@ void Game::drawMenu() {
 	sdlHandler->drawString(15, 45, "Left/Right Arrow - Turn", WHITE);
 	sdlHandler->drawString(15, 75, "Up Arrow - Move", WHITE);
 	sdlHandler->drawString(15, 105, "Space - shoot", WHITE);
-	sdlHandler->drawString(15, 135, "E - pick up gold", WHITE);
+	sdlHandler->drawString(15, 135, "X - pick up gold", WHITE);
 	sdlHandler->drawString(15, 165, "N - New Game", WHITE);
 	sdlHandler->drawString(15, 195, "P - New Map", WHITE);
 	sdlHandler->drawString(15, 225, "1 - Start Bot", WHITE);
@@ -227,6 +231,7 @@ void Game::newGame() {
 	gameMap_->hideAllFields();
 
 	player_->setOnStartPosition();
+	player_->setHasArrow(true);
 }
 
 void Game::newMap() {
@@ -236,6 +241,7 @@ void Game::newMap() {
 	gameMap_ = new Map(this);
 
 	player_->setOnStartPosition();
+	player_->setHasArrow(true);
 }
 
 void Game::changeScore(const int value) {

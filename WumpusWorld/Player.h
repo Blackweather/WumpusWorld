@@ -21,6 +21,7 @@ public:
 	bool isVictorious();
 	bool isDead();
 	bool shootArrow();
+	void setHasArrow(const bool value);
 
 	Rotation getRotation();
 
@@ -32,7 +33,7 @@ private:
 	bool killedMonster();
 	Game* selfGame_;
 	int x, y;
-	bool alive;
+	//bool alive;
 	bool hasGold;
 	bool hasArrow;
 	Rotation rotation;

@@ -5,7 +5,7 @@ Player::Player(Game* game_) {
 	selfGame_ = game_;
 	x = 0;
 	y = selfGame_->getMap()->getHeight() - 1;
-	alive = true;
+	//alive = true;
 	hasGold = false;
 	hasArrow = true;
 	rotation = DOWN;
@@ -101,6 +101,10 @@ bool Player::shootArrow() {
 		}
 	}
 	return false;
+}
+
+void Player::setHasArrow(const bool value) {
+	hasArrow = value;
 }
 
 Rotation Player::getRotation() {
