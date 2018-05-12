@@ -14,7 +14,8 @@ enum Event {
 	SHOOT_ARROW,
 	NEW_GAME,
 	START_BOT,
-	NEW_MAP
+	NEW_MAP,
+	PICKUP_GOLD
 };
 
 struct Coord {
@@ -29,6 +30,9 @@ public:
 	void freespace();
 
 	bool init();
+	
+	// no usage for now, maybe later
+	// just for fun
 	void initTime();
 
 	void gameLoop();
@@ -40,6 +44,11 @@ public:
 
 	void spawnPlayer();
 	void killPlayer();
+
+	void newGame();
+	void newMap();
+	// change score by a value when interacting with game
+	void changeScore(const int value);
 private:
 	void drawMap();
 	void drawMenu();
@@ -57,6 +66,9 @@ private:
 
 	// flag used for progress through current map
 	bool victory = false;
+
+	// used for checking progress
+	int score;
 
 	// t1 - starting time, t2 - current time
 	int t1, t2;

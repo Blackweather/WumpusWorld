@@ -45,6 +45,59 @@ void Map::visitField(const int x, const int y) {
 	field_[y][x].visited = true;
 }
 
+/* makes all fields except starting unvisited */
+void Map::hideAllFields() {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			field_[i][j].visited = false;
+		}
+	}
+
+	visitField(0, height - 1);
+}
+
+void Map::stealGold(const int x, const int y) {
+	field_[y][x].gold = false;
+
+	// the sparkle disappears
+	if (isInBounds(x - 1, y)) {
+		field_[y][x - 1].sparkle = false;
+	}
+	if (isInBounds(x + 1, y)) {
+		field_[y][x + 1].sparkle = false;
+	}
+	if (isInBounds(x, y - 1)) {
+		field_[y - 1][x].sparkle = false;
+	}
+	if (isInBounds(x, y + 1)) {
+		field_[y + 1][x].sparkle = false;
+	}
+}
+
+bool Map::checkIfMonster(const int x, const int y) {
+	return field_[y][x].monster;
+}
+
+void Map::killMonster(const int x, const int y) {
+	// [*]
+	field_[y][x].monster = false;
+
+	// the stench disappears
+	if (isInBounds(x - 1, y)) {
+		field_[y][x - 1].stench = false;
+	}
+	if (isInBounds(x + 1, y)) {
+		field_[y][x + 1].stench = false;
+	}
+	if (isInBounds(x, y - 1)) {
+		field_[y - 1][x].stench = false;
+	}
+	if (isInBounds(x, y + 1)) {
+		field_[y + 1][x].stench = false;
+	}
+
+}
+
 void Map::allocateMap() {
 	field_ = new Field*[height];
 	for (int i = 0; i < height; i++) {
