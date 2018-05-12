@@ -33,6 +33,11 @@ Field** Map::getField() {
 	return field_;
 }
 
+Field Map::getCurrentPlayersField()
+{
+	return field_[selfGame_->getPlayer()->getY()][selfGame_->getPlayer()->getX()];
+}
+
 const int Map::getWidth() {
 	return width;
 }
@@ -241,16 +246,16 @@ void Map::fillMap() {
 
 	Rules:
 	- only one monster
-		- monster surrounded with stench
+	- monster surrounded with stench
 	- only one gold
-		- gold surrounded with sparkle
+	- gold surrounded with sparkle
 	- pit cannot be on the same field as monster/gold
 	- pit cannot be on starting field (bottom left)
 	- pits cannot surround gold
-		- pit cover 15.6% of field
-			(based on google images research)
-			- maybe make it input value?
-		- pit surrounded with breeze
+	- pit cover 15.6% of field
+	(based on google images research)
+	- maybe make it input value?
+	- pit surrounded with breeze
 	******************************************************/
 
 	// guard player starting position
@@ -262,7 +267,7 @@ void Map::fillMap() {
 	int randomX, randomY;
 
 	/**********************
-		monster
+	monster
 	***********************/
 	while (!correctPosition) {
 		randomX = rand() % width;
@@ -297,7 +302,7 @@ void Map::fillMap() {
 	correctPosition = false;
 
 	/*********************
-		gold
+	gold
 	**********************/
 	while (!correctPosition) {
 		randomX = rand() % width;
@@ -330,7 +335,7 @@ void Map::fillMap() {
 	}
 
 	/********************
-		pits
+	pits
 	*********************/
 
 	// thanks to google

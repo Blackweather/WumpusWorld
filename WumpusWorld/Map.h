@@ -27,8 +27,9 @@ public:
 	void createNewMap();
 
 	bool isInBounds(const int x, const int y);
-	
+
 	Field** getField();
+	Field getCurrentPlayersField();
 	const int getWidth();
 	const int getHeight();
 	void visitField(const int x, const int y);

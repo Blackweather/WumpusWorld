@@ -30,17 +30,19 @@ public:
 	void freespace();
 
 	bool init();
-	
+
 	// no usage for now, maybe later
 	// just for fun
 	void initTime();
 
 	void gameLoop();
 	void update();
-	void handleEvents();
+	void handleEvents(Event whatToDo);
+	void handleEventsFromKeyboard();
 
 	void createMap();
 	Map* getMap();
+	Player* getPlayer();
 
 	void spawnPlayer();
 	void killPlayer();

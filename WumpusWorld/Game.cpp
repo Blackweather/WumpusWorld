@@ -90,12 +90,11 @@ void Game::update() {
 		SDL_Delay(700);
 		newMap();
 	}
-	handleEvents();
+	handleEventsFromKeyboard();
 }
 
-void Game::handleEvents() {
-	InputHandler* handler = new InputHandler();
-	switch (handler->handleKeyStates()) {
+void Game::handleEvents(Event whatToDo) {
+	switch (whatToDo) {
 	case MOVE:
 		// move character forward
 		if (player_->move()) {
@@ -144,9 +143,11 @@ void Game::handleEvents() {
 	case NO_EVENT:
 		break;
 	}
+}
 
-	if (handler->handleQuit() == QUIT) quit = true;
-
+void Game::handleEventsFromKeyboard() {
+	InputHandler* handler = new InputHandler();
+	handleEvents(handler->handleKeyStates());
 	delete handler;
 }
 
@@ -156,6 +157,11 @@ void Game::createMap() {
 
 Map* Game::getMap() {
 	return gameMap_;
+}
+
+Player * Game::getPlayer()
+{
+	return player_;
 }
 
 void Game::spawnPlayer() {
