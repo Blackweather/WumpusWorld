@@ -30,6 +30,9 @@ Event InputHandler::handleKeyStates() {
 			else if (event.key.keysym.sym == SDLK_p) {
 				return NEW_MAP;
 			}
+			else if (event.key.keysym.sym == SDLK_x) {
+				return PICKUP_GOLD;
+			}
 			else if (event.key.keysym.sym == SDLK_ESCAPE) {
 				return QUIT;
 			}

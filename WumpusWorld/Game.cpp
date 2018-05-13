@@ -70,39 +70,72 @@ void Game::update() {
 
 	// draw player
 	drawPlayer();
-
 	sdlHandler->render();
-	handleEvents();
+	if (player_->isVictorious()) {
+		changeScore(1000);
+		drawMenu();
+		sdlHandler->render();
+		SDL_Delay(700);
+		newMap();
+		// end playing current map
+		// call victory menu
+		// wait
+		// prompt for restart (3s - new map)
+		// less than 3s - can choose (new map or same map)
+	}
+	if (player_->isDead()) {
+		changeScore(-100);
+		drawMenu();
+		sdlHandler->render();
+		SDL_Delay(700);
+		newMap();
+	}
+	handleEventsFromKeyboard();
 }
 
-void Game::handleEvents() {
-	InputHandler* handler = new InputHandler();
-	switch (handler->handleKeyStates()) {
+void Game::handleEvents(Event whatToDo) {
+	switch (whatToDo) {
 	case MOVE:
 		// move character forward
-		player_->move();
+		if (player_->move()) {
+			changeScore(-1);
+		}
 		break;
 	case TURN_LEFT:
 		// change player direction 90 deg to left
 		player_->turn(false);
+		changeScore(-1);
 		break;
 	case TURN_RIGHT:
 		// change player direction 90 deg to right
 		player_->turn(true);
+		changeScore(-1);
 		break;
 	case SHOOT_ARROW:
 		// self explanatory
+		if (player_->shootArrow()) changeScore(100);
+		else changeScore(-1);
 		break;
 	case NEW_GAME:
 		// start over same map
-		initTime();
+		newGame();
+		score = 0;
 		break;
 	case START_BOT:
 		// launch bot
 		break;
 	case NEW_MAP:
 		// generate new map
-		initTime();
+		newMap();
+		score = 0;
+		break;
+	case PICKUP_GOLD:
+		// pickup gold
+		if (player_->pickUpGold()) {
+			changeScore(10);
+			//erase gold from map
+			gameMap_->stealGold(player_->getX(), player_->getY());
+		}
 		break;
 	case QUIT:
 		quit = true;
@@ -110,9 +143,11 @@ void Game::handleEvents() {
 	case NO_EVENT:
 		break;
 	}
+}
 
-	if (handler->handleQuit() == QUIT) quit = true;
-
+void Game::handleEventsFromKeyboard() {
+	InputHandler* handler = new InputHandler();
+	handleEvents(handler->handleKeyStates());
 	delete handler;
 }
 
@@ -122,6 +157,11 @@ void Game::createMap() {
 
 Map* Game::getMap() {
 	return gameMap_;
+}
+
+Player * Game::getPlayer()
+{
+	return player_;
 }
 
 void Game::spawnPlayer() {
@@ -151,10 +191,16 @@ void Game::drawMenu() {
 	sdlHandler->drawString(15, 45, "Left/Right Arrow - Turn", WHITE);
 	sdlHandler->drawString(15, 75, "Up Arrow - Move", WHITE);
 	sdlHandler->drawString(15, 105, "Space - shoot", WHITE);
-	sdlHandler->drawString(15, 135, "N - New Game", WHITE);
-	sdlHandler->drawString(15, 165, "P - New Map", WHITE);
-	sdlHandler->drawString(15, 195, "1 - Start Bot", WHITE);
-	sdlHandler->drawString(15, 225, "ESC - Quit", WHITE);
+	sdlHandler->drawString(15, 135, "X - pick up gold", WHITE);
+	sdlHandler->drawString(15, 165, "N - New Game", WHITE);
+	sdlHandler->drawString(15, 195, "P - New Map", WHITE);
+	sdlHandler->drawString(15, 225, "1 - Start Bot", WHITE);
+	sdlHandler->drawString(15, 255, "ESC - Quit", WHITE);
+	char text[128];
+	sprintf_s(text, "Score = %d", score);
+	sdlHandler->drawString(15, 315, text, WHITE);
+	sprintf_s(text, "Elapsed time = %.1lf s", worldTime);
+	sdlHandler->drawString(15, 345, text, WHITE);
 }
 
 void Game::drawPlayer() {
@@ -184,4 +230,26 @@ Coord Game::mapToWindowCoords(const int x, const int y) {
 	c.x = x * 64 + (SCREEN_HEIGHT / 3) + ((768 - (gameMap_->getWidth()) * 64) / 2);
 	c.y = y * 64 + ((SCREEN_HEIGHT - (gameMap_->getHeight()) * 64) / 2);
 	return c;
+}
+
+void Game::newGame() {
+	initTime();
+	gameMap_->hideAllFields();
+
+	player_->setOnStartPosition();
+	player_->setHasArrow(true);
+}
+
+void Game::newMap() {
+	initTime();
+	score = 0;
+	delete gameMap_;
+	gameMap_ = new Map(this);
+
+	player_->setOnStartPosition();
+	player_->setHasArrow(true);
+}
+
+void Game::changeScore(const int value) {
+	score += value;
 }

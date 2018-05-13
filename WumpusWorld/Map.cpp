@@ -33,6 +33,11 @@ Field** Map::getField() {
 	return field_;
 }
 
+Field Map::getCurrentPlayersField()
+{
+	return field_[selfGame_->getPlayer()->getY()][selfGame_->getPlayer()->getX()];
+}
+
 const int Map::getWidth() {
 	return width;
 }
@@ -43,6 +48,59 @@ const int Map::getHeight() {
 
 void Map::visitField(const int x, const int y) {
 	field_[y][x].visited = true;
+}
+
+/* makes all fields except starting unvisited */
+void Map::hideAllFields() {
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			field_[i][j].visited = false;
+		}
+	}
+
+	visitField(0, height - 1);
+}
+
+void Map::stealGold(const int x, const int y) {
+	field_[y][x].gold = false;
+
+	// the sparkle disappears
+	if (isInBounds(x - 1, y)) {
+		field_[y][x - 1].sparkle = false;
+	}
+	if (isInBounds(x + 1, y)) {
+		field_[y][x + 1].sparkle = false;
+	}
+	if (isInBounds(x, y - 1)) {
+		field_[y - 1][x].sparkle = false;
+	}
+	if (isInBounds(x, y + 1)) {
+		field_[y + 1][x].sparkle = false;
+	}
+}
+
+bool Map::checkIfMonster(const int x, const int y) {
+	return field_[y][x].monster;
+}
+
+void Map::killMonster(const int x, const int y) {
+	// [*]
+	field_[y][x].monster = false;
+
+	// the stench disappears
+	if (isInBounds(x - 1, y)) {
+		field_[y][x - 1].stench = false;
+	}
+	if (isInBounds(x + 1, y)) {
+		field_[y][x + 1].stench = false;
+	}
+	if (isInBounds(x, y - 1)) {
+		field_[y - 1][x].stench = false;
+	}
+	if (isInBounds(x, y + 1)) {
+		field_[y + 1][x].stench = false;
+	}
+
 }
 
 void Map::allocateMap() {
@@ -188,16 +246,16 @@ void Map::fillMap() {
 
 	Rules:
 	- only one monster
-		- monster surrounded with stench
+	- monster surrounded with stench
 	- only one gold
-		- gold surrounded with sparkle
+	- gold surrounded with sparkle
 	- pit cannot be on the same field as monster/gold
 	- pit cannot be on starting field (bottom left)
 	- pits cannot surround gold
-		- pit cover 15.6% of field
-			(based on google images research)
-			- maybe make it input value?
-		- pit surrounded with breeze
+	- pit cover 15.6% of field
+	(based on google images research)
+	- maybe make it input value?
+	- pit surrounded with breeze
 	******************************************************/
 
 	// guard player starting position
@@ -209,7 +267,7 @@ void Map::fillMap() {
 	int randomX, randomY;
 
 	/**********************
-		monster
+	monster
 	***********************/
 	while (!correctPosition) {
 		randomX = rand() % width;
@@ -244,7 +302,7 @@ void Map::fillMap() {
 	correctPosition = false;
 
 	/*********************
-		gold
+	gold
 	**********************/
 	while (!correctPosition) {
 		randomX = rand() % width;
@@ -277,7 +335,7 @@ void Map::fillMap() {
 	}
 
 	/********************
-		pits
+	pits
 	*********************/
 
 	// thanks to google
