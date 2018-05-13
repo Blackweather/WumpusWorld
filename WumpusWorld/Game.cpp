@@ -2,6 +2,7 @@
 #include "InputHandler.h"
 
 Game::Game() {
+	isMonsterDead = false;
 }
 
 Game::~Game() {}
@@ -113,7 +114,10 @@ void Game::handleEvents(Event whatToDo) {
 		break;
 	case SHOOT_ARROW:
 		// self explanatory
-		if (player_->shootArrow()) changeScore(100);
+		if (player_->shootArrow()) {
+			changeScore(100);
+			isMonsterDead = true;
+		}
 		else changeScore(-1);
 		break;
 	case NEW_GAME:
@@ -252,4 +256,8 @@ void Game::newMap() {
 
 void Game::changeScore(const int value) {
 	score += value;
+}
+
+bool Game::getIsMonsterDead() {
+	return isMonsterDead;
 }

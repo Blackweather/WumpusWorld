@@ -51,6 +51,8 @@ public:
 	void newMap();
 	// change score by a value when interacting with game
 	void changeScore(const int value);
+
+	bool getIsMonsterDead();
 private:
 	void drawMap();
 	void drawMenu();
@@ -78,6 +80,8 @@ private:
 	// delta=t2-t1
 	// worldTime - seconds since program started
 	double delta, worldTime;
+
+	bool isMonsterDead;
 };
 
 #endif // !GAME_H
