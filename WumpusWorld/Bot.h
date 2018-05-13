@@ -3,14 +3,19 @@
 
 #include "Game.h"
 
+#define IMPOSSIBLE -1
+
 struct infoAboutPosition {
+	// not visited
 	bool unknown = true;
-	bool safe;
+	// only safe when 100% sure or visited
+	bool safe = false;
+	// probabilty of field being sth
 	short probablyPit = 0;
-	bool monster;
 	short probablyMonster = 0;
-	bool gold;
 	short probablyGold = 0;
+	bool isMonster = false;
+	bool isGold = false;
 };
 
 class Bot {
@@ -22,9 +27,11 @@ private:
 public:
 	Bot(Game*);
 	void checkWhatsInField();
+
 	void increaseProbabilityForPit(const int x, const int y);
 	void increaseProbabilityForMonster(const int x, const int y);
 	void increaseProbabilityForGold(const int x, const int y);
+
 	short checkHowManyFieldsAreProbable(const int x, const int y);
 	bool checkIfFieldIsProbable(const int x, const int y);
 	bool checkIfAnyFieldAroundDeletesProbability(const int x, const int y);
