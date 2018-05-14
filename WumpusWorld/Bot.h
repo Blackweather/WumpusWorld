@@ -61,6 +61,7 @@ public:
 
 	void moveInDirection(Rotation direction);
 	void rotateToDirection(Rotation direction);
+	Rotation getDirection(const int x, const int y);
 
 	void pickGoldAndRun();
 	void findPath(Coords coords);

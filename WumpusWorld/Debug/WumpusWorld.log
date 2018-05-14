@@ -2,6 +2,6 @@
 d:\studia\sztuczna\wumpusworld_repo\wumpusworld\wumpusworld\bot.cpp(85): warning C4715: 'Bot::checkIfAnyFieldAroundDeletesProbability': not all control paths return a value
 d:\studia\sztuczna\wumpusworld_repo\wumpusworld\wumpusworld\bot.cpp(143): warning C4715: 'Bot::checkForBreezeOnField': not all control paths return a value
 d:\studia\sztuczna\wumpusworld_repo\wumpusworld\wumpusworld\bot.cpp(160): warning C4715: 'Bot::checkForStenchOnField': not all control paths return a value
-d:\studia\sztuczna\wumpusworld_repo\wumpusworld\wumpusworld\bot.cpp(266): warning C4715: 'Bot::checkIfMonsterInFrontOfUs': not all control paths return a value
+d:\studia\sztuczna\wumpusworld_repo\wumpusworld\wumpusworld\bot.cpp(225): warning C4715: 'Bot::getDirection': not all control paths return a value
   WumpusWorld.vcxproj -> D:\studia\Sztuczna\WumpusWorld_repo\WumpusWorld\Debug\WumpusWorld.exe
   WumpusWorld.vcxproj -> D:\studia\Sztuczna\WumpusWorld_repo\WumpusWorld\Debug\WumpusWorld.pdb (Partial PDB)
