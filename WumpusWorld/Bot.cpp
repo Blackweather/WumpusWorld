@@ -9,6 +9,25 @@ Bot::Bot(Game* _game) {
 	}
 }
 
+Bot::~Bot() {
+	
+}
+
+void Bot::restart() {
+	for (int i = 0; i < game->getMap()->getHeight(); i++) {
+		delete[] map[i];
+	}
+	delete map;
+
+	map = new infoAboutPosition*[game->getMap()->getHeight()];
+	for (int i = 0; i < game->getMap()->getHeight(); i++) {
+		map[i] = new infoAboutPosition[game->getMap()->getWidth()];
+	}
+
+	goldFound = false;
+	monsterFound = false;
+}
+
 void Bot::checkWhatsInField() {
 	Field field = game->getMap()->getCurrentPlayersField();
 	int x = game->getPlayer()->getX();
@@ -266,6 +285,9 @@ void Bot::findPath(Coords coords) {
 
 		//move to current location
 		moveInDirection(getDirection(location.x, location.y));
+		if (location.x == coords.x && location.y == coords.y) {
+			break;
+		}
 
 		// loop through safe neighbours
 		// if any is final - done
@@ -274,49 +296,64 @@ void Bot::findPath(Coords coords) {
 
 		// up
 		if (location.x == coords.x && location.y - 1 == coords.y) {
+			moveInDirection(getDirection(location.x, location.y - 1));
 			break;
 		}
 		else if (game->getMap()->isInBounds(location.x, location.y - 1)) {
-			if (BFSMap[location.x][location.y - 1] == UNVISITED &&
-				map[location.x][location.y - 1].safe) {
+			if (BFSMap[location.y - 1][location.x] == UNVISITED &&
+				map[location.y - 1][location.x].safe) {
 				cQueue.push(Coords(location.x, location.y - 1));
 			}
 		}
 
 		// right
 		if (location.x + 1 == coords.x && location.y == coords.y) {
+			moveInDirection(getDirection(location.x + 1, location.y));
 			break;
 		}
 		else if (game->getMap()->isInBounds(location.x + 1, location.y)) {
-			if (BFSMap[location.x + 1][location.y] == UNVISITED &&
-				map[location.x + 1][location.y].safe) {
+			if (BFSMap[location.y][location.x + 1] == UNVISITED &&
+				map[location.y][location.x + 1].safe) {
 				cQueue.push(Coords(location.x + 1, location.y));
 			}
 		}
 
 		// down
-		if (location.x == coords.x && location.y + 1 == coords.y) {
+		if (location.x == coords.x && location.y - 1 == coords.y) {
+			moveInDirection(getDirection(location.x, location.y - 1));
 			break;
 		}
 		else if (game->getMap()->isInBounds(location.x, location.y + 1)) {
-			if (BFSMap[location.x][location.y + 1] == UNVISITED &&
-				map[location.x][location.y + 1].safe) {
+			if (BFSMap[location.y + 1][location.x] == UNVISITED &&
+				map[location.y + 1][location.x].safe) {
 				cQueue.push(Coords(location.x, location.y + 1));
 			}
 		}
 
 		// left
 		if (location.x - 1 == coords.x && location.y == coords.y) {
+			moveInDirection(getDirection(location.x - 1, location.y));
 			break;
 		}
 		else if (game->getMap()->isInBounds(location.x - 1, location.y)) {
-			if (BFSMap[location.x - 1][location.y] == UNVISITED &&
-				map[location.x - 1][location.y].safe) {
+			if (BFSMap[location.y][location.x - 1] == UNVISITED &&
+				map[location.y][location.x - 1].safe) {
 				cQueue.push(Coords(location.x - 1, location.y));
 			}
 		}
 	}
 	// END SEARCH FOR FIELD
+
+	// empty the queue
+	while (!cQueue.empty()) {
+		cQueue.pop();
+	}
+
+	// free memory after BFSMap
+	for (int i = 0; i < game->getMap()->getHeight(); i++) {
+		delete[] BFSMap[i];
+	}
+	delete BFSMap;
 }
 
 void Bot::findSafePassageToExit() {
@@ -413,7 +450,8 @@ Coords Bot::BFS(bool isLookingForSafe) {
 
 					int chance = getFieldDangerChance(j, i);
 
-					if (chance < minimumProbability) {
+					if (chance <= minimumProbability &&
+						chance > 0) {
 						minimumProbability = chance;
 						allSafeFields.push_back(Coords(j, i));
 					}
@@ -422,10 +460,18 @@ Coords Bot::BFS(bool isLookingForSafe) {
 		}
 
 		// delete all fields with danger chance higher than minimum
-		for (int i = allSafeFields.size() - 1; i >= 0; i++) {
+		/*for (int i = allSafeFields.size() - 1; i >= 0; i++) {
 			Coords field = allSafeFields.at(i);
 			if (getFieldDangerChance(field.x, field.y) > minimumProbability) {
 				allSafeFields.erase(allSafeFields.begin() + i);
+			}
+		}*/
+		for (auto i = allSafeFields.begin(); i != allSafeFields.begin();) {
+			if (getFieldDangerChance(i->x,i->y)>minimumProbability) {
+				i = allSafeFields.erase(i);
+			}
+			else {
+				++i;
 			}
 		}
 	}
@@ -482,6 +528,9 @@ Coords Bot::BFS(bool isLookingForSafe) {
 				location = cQueue.front();
 				cQueue.pop();
 			}
+			if (location.x == IMPOSSIBLE) {
+				break;
+			}
 			// mark current location as visited
 			BFSMap[location.y][location.x] = VISITED;
 
@@ -499,8 +548,8 @@ Coords Bot::BFS(bool isLookingForSafe) {
 				break;
 			}
 			else if (game->getMap()->isInBounds(location.x, location.y - 1)) {
-				if (BFSMap[location.x][location.y - 1] == UNVISITED &&
-					map[location.x][location.y - 1].safe) {
+				if (BFSMap[location.y - 1][location.x] == UNVISITED &&
+					map[location.y - 1][location.x].safe) {
 					cQueue.push(Coords(location.x, location.y - 1));
 				}
 			}
@@ -510,8 +559,8 @@ Coords Bot::BFS(bool isLookingForSafe) {
 				break;
 			}
 			else if (game->getMap()->isInBounds(location.x + 1, location.y)) {
-				if (BFSMap[location.x + 1][location.y] == UNVISITED &&
-					map[location.x + 1][location.y].safe) {
+				if (BFSMap[location.y][location.x + 1] == UNVISITED &&
+					map[location.y][location.x + 1].safe) {
 					cQueue.push(Coords(location.x + 1, location.y));
 				}
 			}
@@ -521,8 +570,8 @@ Coords Bot::BFS(bool isLookingForSafe) {
 				break;
 			}
 			else if (game->getMap()->isInBounds(location.x, location.y + 1)) {
-				if (BFSMap[location.x][location.y + 1] == UNVISITED &&
-					map[location.x][location.y + 1].safe) {
+				if (BFSMap[location.y + 1][location.x] == UNVISITED &&
+					map[location.y + 1][location.x].safe) {
 					cQueue.push(Coords(location.x, location.y + 1));
 				}
 			}
@@ -532,8 +581,8 @@ Coords Bot::BFS(bool isLookingForSafe) {
 				break;
 			}
 			else if (game->getMap()->isInBounds(location.x - 1, location.y)) {
-				if (BFSMap[location.x - 1][location.y] == UNVISITED &&
-					map[location.x - 1][location.y].safe) {
+				if (BFSMap[location.y][location.x - 1] == UNVISITED &&
+					map[location.y][location.x - 1].safe) {
 					cQueue.push(Coords(location.x - 1, location.y));
 				}
 			}
@@ -573,8 +622,30 @@ Coords Bot::BFS(bool isLookingForSafe) {
 		sortVec.push_back(Pair(allSafeFields[i], pathLengths[i]));
 	}
 	sort(sortVec.begin(), sortVec.end());
+
+	// get a random field
+	// get minimum length
 	if (!sortVec.empty()) {
-		return sortVec[0].location;
+		int minLength = 1000;
+		for each (Pair p in sortVec)
+		{
+			if (p.len < minLength) {
+				minLength = p.len;
+			}
+		}
+		//get number of elements with minimum length
+		int minCount = 0;
+		for each (Pair p in sortVec)
+		{
+			if (p.len == minLength) {
+				minCount++;
+			}
+		}
+
+		srand(time(NULL));
+		int random = rand() % minCount;
+		return sortVec[random].location;
 	}
+
 	return Coords(IMPOSSIBLE, IMPOSSIBLE);
 }

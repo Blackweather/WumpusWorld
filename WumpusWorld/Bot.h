@@ -6,6 +6,8 @@
 #include "Player.h"
 #include <vector>
 #include <queue>
+#include <time.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -38,6 +40,8 @@ private:
 	bool monsterFound;
 public:
 	Bot(Game*);
+	~Bot();
+	void restart();
 	void checkWhatsInField();
 
 	void increaseProbabilityForPit(const int x, const int y);

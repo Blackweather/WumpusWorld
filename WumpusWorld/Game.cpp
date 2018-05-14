@@ -3,6 +3,7 @@
 
 Game::Game() {
 	isMonsterDead = false;
+	score = 0;
 }
 
 Game::~Game() {}
@@ -46,7 +47,7 @@ void Game::freespace() {
 
 void Game::gameLoop() {
 	while (!quit) {
-		update();
+		handleEventsFromKeyboard();
 	}
 }
 
@@ -92,7 +93,6 @@ void Game::update() {
 		SDL_Delay(700);
 		newMap();
 	}
-	handleEventsFromKeyboard();
 }
 
 void Game::handleEvents(Event whatToDo) {
@@ -149,6 +149,7 @@ void Game::handleEvents(Event whatToDo) {
 	case NO_EVENT:
 		break;
 	}
+	update();
 }
 
 void Game::handleEventsFromKeyboard() {
@@ -244,16 +245,17 @@ void Game::newGame() {
 
 	player_->setOnStartPosition();
 	player_->setHasArrow(true);
+	bot->restart();
 }
 
 void Game::newMap() {
 	initTime();
-	score = 0;
 	delete gameMap_;
 	gameMap_ = new Map(this);
 
 	player_->setOnStartPosition();
 	player_->setHasArrow(true);
+	bot->restart();
 }
 
 void Game::changeScore(const int value) {

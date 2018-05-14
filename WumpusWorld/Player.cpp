@@ -28,7 +28,7 @@ void Player::turn(bool clockwise) {
 		rotation = (clockwise) ? UP : DOWN;
 		break;
 	}
-	SDL_Delay(40);
+	SDL_Delay(100);
 }
 
 bool Player::move() {
@@ -51,7 +51,7 @@ bool Player::move() {
 		break;
 	}
 
-	SDL_Delay(40);
+	SDL_Delay(100);
 
 	if (selfGame_->getMap()->isInBounds(newX, newY)) {
 		x = newX;
