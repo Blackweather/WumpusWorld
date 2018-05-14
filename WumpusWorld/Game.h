@@ -4,6 +4,7 @@
 #include "SDLHandler.h"
 #include "Map.h"
 #include "Player.h"
+#include "Bot.h"
 
 enum Event {
 	QUIT,
@@ -51,6 +52,8 @@ public:
 	void newMap();
 	// change score by a value when interacting with game
 	void changeScore(const int value);
+
+	bool getIsMonsterDead();
 private:
 	void drawMap();
 	void drawMenu();
@@ -62,6 +65,7 @@ private:
 	Map* gameMap_;
 
 	Player* player_;
+	Bot* bot;
 
 	// flag used for quitting the game
 	bool quit;
@@ -78,6 +82,8 @@ private:
 	// delta=t2-t1
 	// worldTime - seconds since program started
 	double delta, worldTime;
+
+	bool isMonsterDead;
 };
 
 #endif // !GAME_H

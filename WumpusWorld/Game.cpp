@@ -2,6 +2,7 @@
 #include "InputHandler.h"
 
 Game::Game() {
+	isMonsterDead = false;
 }
 
 Game::~Game() {}
@@ -27,6 +28,7 @@ bool Game::init() {
 	spawnPlayer();
 
 	victory = false;
+	bot = new Bot(this);
 	return true;
 }
 
@@ -113,7 +115,10 @@ void Game::handleEvents(Event whatToDo) {
 		break;
 	case SHOOT_ARROW:
 		// self explanatory
-		if (player_->shootArrow()) changeScore(100);
+		if (player_->shootArrow()) {
+			changeScore(100);
+			isMonsterDead = true;
+		}
 		else changeScore(-1);
 		break;
 	case NEW_GAME:
@@ -123,6 +128,7 @@ void Game::handleEvents(Event whatToDo) {
 		break;
 	case START_BOT:
 		// launch bot
+		bot->decideBestMove();
 		break;
 	case NEW_MAP:
 		// generate new map
@@ -252,4 +258,8 @@ void Game::newMap() {
 
 void Game::changeScore(const int value) {
 	score += value;
+}
+
+bool Game::getIsMonsterDead() {
+	return isMonsterDead;
 }
