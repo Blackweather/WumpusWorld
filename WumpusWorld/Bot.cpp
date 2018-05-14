@@ -257,7 +257,7 @@ bool Bot::checkIfMonsterInFrontOfUs() {
 }
 
 bool Bot::isSafeFieldAvailable() {
-	//TODO: Check if there is possibility to get to some safe field,
+	//TODO: Check if there is possibility to get to some unknown safe field,
 	//without need to go through not 100% safe fields
 
 
@@ -273,6 +273,10 @@ bool Bot::isSafeFieldAvailable() {
 }
 
 Coords Bot::findNearestUnvisitedSafeField() {
+	return BFS(true);
+
+
+	// try to change this to function
 	vector<Coords> allSafeFields;
 	int x = game->getPlayer()->getX();
 	int y = game->getPlayer()->getY();
@@ -407,5 +411,199 @@ Coords Bot::findNearestLeastDangerousField() {
 	// determine which has the shortest path to it
 
 	// return it
-	return Coords(0, 0);
+	return BFS(false);
+}
+
+int Bot::getFieldDangerChance(const int x, const int y) {
+	int chance;
+	if (map[y][x].probablyMonster == IMPOSSIBLE) {
+		chance = map[y][x].probablyPit;
+	}
+	else if (map[y][x].probablyPit == IMPOSSIBLE) {
+		chance = map[y][x].probablyMonster;
+	}
+	else {
+		chance = map[y][x].probablyMonster + map[y][x].probablyPit;
+	}
+	return chance;
+}
+
+Coords Bot::BFS(bool isLookingForSafe) {
+	vector<Coords> allSafeFields;
+	int x = game->getPlayer()->getX();
+	int y = game->getPlayer()->getY();
+
+	// operations for finding nearest fields
+		// looking for nearest field with least chance to be dangerous
+	if (!isLookingForSafe) {
+		// value for guarding up
+		int minimumProbability = 100;
+
+		// first find minimum probability within unknown fields
+		for (int i = 0; i < game->getMap()->getHeight(); i++) {
+			for (int j = 0; j < game->getMap()->getWidth(); j++) {
+				if ((i != y || j != x) && map[i][j].unknown &&
+					(map[i][j].probablyMonster != IMPOSSIBLE || map[i][j].probablyPit != IMPOSSIBLE)) {
+
+					int chance = getFieldDangerChance(j, i);
+
+					if (chance < minimumProbability) {
+						minimumProbability = chance;
+						allSafeFields.push_back(Coords(j, i));
+					}
+				}
+			}
+		}
+
+		// delete all fields with danger chance higher than minimum
+		for (int i = allSafeFields.size() - 1; i >= 0; i++) {
+			Coords field = allSafeFields.at(i);
+			if (getFieldDangerChance(field.x, field.y) > minimumProbability) {
+				allSafeFields.erase(allSafeFields.begin() + i);
+			}
+		}
+	}
+	// looking for nearest unknown safe field 
+	else {
+
+		for (int i = 0; i < game->getMap()->getHeight(); i++) {
+			for (int j = 0; j < game->getMap()->getWidth(); j++) {
+				if ((i != y || j != x) && map[i][j].unknown && map[i][j].safe) {
+					allSafeFields.push_back(Coords(j, i));
+				}
+			}
+		}
+	}
+
+	// find path to each safe unvisited and return with shortest path
+	queue<Coords> cQueue;
+
+	// to find the shortest later
+	vector<int> pathLengths;
+
+	for each (Coords final in allSafeFields)
+	{
+		// search start location
+		cQueue.push(Coords(x, y));
+
+		// starting path length
+		int pathLen = 0;
+
+		const int UNVISITED = -1, VISITED = 1;
+
+		// for marking fields as visited by algorithm
+		int** BFSMap;
+		BFSMap = new int*[game->getMap()->getHeight()];
+		for (int i = 0; i < game->getMap()->getHeight(); i++) {
+			BFSMap[i] = new int[game->getMap()->getWidth()];
+		}
+
+		for (int i = 0; i < game->getMap()->getHeight(); i++) {
+			for (int j = 0; j < game->getMap()->getWidth(); j++) {
+				// set all as unvisited by algorithm
+				BFSMap[i][j] = -1;
+			}
+		}
+
+		// loop while not at final
+		while (true) {
+			// main loop
+			// pop location from queue
+			Coords location = cQueue.front();
+			cQueue.pop();
+			// mark current location as visited
+			BFSMap[location.y][location.x] = 1;
+
+			// increase path length
+			pathLen++;
+
+
+			// loop through safe neighbours
+			// if any is final - done
+			// if no final, not visited by algorithm - add to queue 
+			// add to queue when is visited and safe
+
+			// up
+			if (game->getMap()->isInBounds(location.x, location.y - 1)) {
+				if (map[location.x][location.y - 1].safe) {
+					if (map[location.x][location.y - 1].unknown) {
+						break;
+					}
+					if (BFSMap[location.x][location.y - 1] == -1) {
+						cQueue.push(Coords(location.x, location.y - 1));
+					}
+				}
+			}
+
+			// right
+			if (game->getMap()->isInBounds(location.x + 1, location.y)) {
+				if (map[location.x + 1][location.y].safe) {
+					if (map[location.x + 1][location.y].unknown) {
+						break;
+					}
+					if (BFSMap[location.x + 1][location.y] == -1) {
+						cQueue.push(Coords(location.x + 1, location.y));
+					}
+				}
+			}
+
+			// down
+			if (game->getMap()->isInBounds(location.x, location.y + 1)) {
+				if (map[location.x][location.y + 1].safe) {
+					if (map[location.x][location.y + 1].unknown) {
+						break;
+					}
+					if (BFSMap[location.x][location.y + 1] == -1) {
+						cQueue.push(Coords(location.x, location.y + 1));
+					}
+				}
+			}
+
+			// left
+			if (game->getMap()->isInBounds(location.x - 1, location.y)) {
+				if (map[location.x - 1][location.y].safe) {
+					if (map[location.x - 1][location.y].unknown) {
+						break;
+					}
+					if (BFSMap[location.x - 1][location.y] == -1) {
+						cQueue.push(Coords(location.x - 1, location.y));
+					}
+				}
+			}
+		}
+
+		// empty the queue
+		while (!cQueue.empty()) {
+			cQueue.pop();
+		}
+
+		// free memory after BFSMap
+		for (int i = 0; i < game->getMap()->getHeight(); i++) {
+			delete[] BFSMap[i];
+		}
+		delete BFSMap;
+
+		// repeat with the first queued location
+
+		pathLengths.push_back(pathLen);
+	}
+
+	//sort safeFields based on pathLengths
+	struct Pair {
+		Coords location;
+		int len;
+		Pair(Coords _c, int _len) : location(_c), len(_len) {}
+		bool operator<(const Pair& rhs) const
+		{
+			return len < rhs.len;
+		}
+	};
+
+	vector<Pair> sortVec;
+	for (size_t i = 0; i < pathLengths.size(); i++) {
+		sortVec.push_back(Pair(allSafeFields[i], pathLengths[i]));
+	}
+	sort(sortVec.begin(), sortVec.end());
+
+	return sortVec[0].location;
 }

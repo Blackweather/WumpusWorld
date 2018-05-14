@@ -56,7 +56,6 @@ public:
 	void checkForStenchAroundField(const int x, const int y);
 	bool checkForStenchOnField(const int x, const int y);
 
-
 	void markAsSafe(const int x, const int y);
 	void decideBestMove();
 
@@ -73,6 +72,12 @@ public:
 	bool isSafeFieldAvailable();
 	Coords findNearestUnvisitedSafeField();
 	Coords findNearestLeastDangerousField();
+
+	int getFieldDangerChance(const int x, const int y);
+
+	// for finding nearest fields
+	Coords BFS(bool isLookingForSafe);
+
 };
 
 #endif
