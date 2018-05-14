@@ -4,6 +4,10 @@
 #define IMPOSSIBLE -1
 
 #include "Player.h"
+#include <vector>
+#include <queue>
+
+using namespace std;
 
 class Game;
 
