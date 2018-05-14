@@ -4,6 +4,7 @@
 #include "SDLHandler.h"
 #include "Map.h"
 #include "Player.h"
+#include "Bot.h"
 
 enum Event {
 	QUIT,
@@ -64,6 +65,7 @@ private:
 	Map* gameMap_;
 
 	Player* player_;
+	Bot* bot;
 
 	// flag used for quitting the game
 	bool quit;

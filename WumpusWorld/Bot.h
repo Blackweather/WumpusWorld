@@ -1,9 +1,11 @@
 #ifndef BOT
 #define BOT
 
-#include "Game.h"
-
 #define IMPOSSIBLE -1
+
+#include "Player.h"
+
+class Game;
 
 struct infoAboutPosition {
 	// not visited
@@ -16,6 +18,12 @@ struct infoAboutPosition {
 	short probablyGold = 0;
 	bool isMonster = false;
 	bool isGold = false;
+};
+
+struct Coords {
+	int x;
+	int y;
+	Coords(int _x, int _y) : x(_x), y(_y) {}
 };
 
 class Bot {
@@ -47,6 +55,20 @@ public:
 
 	void markAsSafe(const int x, const int y);
 	void decideBestMove();
+
+	void moveInDirection(Rotation direction);
+	void rotateToDirection(Rotation direction);
+
+	void pickGoldAndRun();
+	void findPath(Coords coords);
+	void findSafePassageToExit();
+
+	void killMonster();
+	bool checkIfMonsterInFrontOfUs();
+
+	bool isSafeFieldAvailable();
+	Coords findNearestUnvisitedSafeField();
+	Coords findNearestLeastDangerousField();
 };
 
 #endif

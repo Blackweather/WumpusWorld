@@ -28,6 +28,7 @@ bool Game::init() {
 	spawnPlayer();
 
 	victory = false;
+	bot = new Bot(this);
 	return true;
 }
 
@@ -127,6 +128,7 @@ void Game::handleEvents(Event whatToDo) {
 		break;
 	case START_BOT:
 		// launch bot
+		bot->decideBestMove();
 		break;
 	case NEW_MAP:
 		// generate new map

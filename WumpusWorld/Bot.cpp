@@ -1,7 +1,9 @@
 #include "Bot.h"
+#include "Game.h"
 
-Bot::Bot(Game* _game) : game(_game) {
-	*map = new infoAboutPosition[game->getMap()->getHeight()];
+Bot::Bot(Game* _game) {
+	game = _game;
+	map = new infoAboutPosition*[game->getMap()->getHeight()];
 	for (int i = 0; i < game->getMap()->getHeight(); i++) {
 		map[i] = new infoAboutPosition[game->getMap()->getWidth()];
 	}
@@ -170,6 +172,96 @@ void Bot::markAsSafe(const int x, const int y) {
 }
 
 void Bot::decideBestMove() {
-
+	checkWhatsInField();
+	if (isSafeFieldAvailable())
+		findPath(findNearestUnvisitedSafeField());
+	else
+		findPath(findNearestLeastDangerousField());
+	if (game->getMap()->getCurrentPlayersField().gold)
+		pickGoldAndRun();
+	if (monsterFound)
+		killMonster();
 }
 
+void Bot::moveInDirection(Rotation direction) {
+	rotateToDirection(direction);
+	game->handleEvents(MOVE);
+}
+
+void Bot::rotateToDirection(Rotation direction) {
+	int playerDir = game->getPlayer()->getRotation();
+	if (playerDir == direction - 1 || playerDir == direction + 3)
+		game->handleEvents(TURN_RIGHT);
+	if (playerDir == direction + 1 || playerDir == direction - 3)
+		game->handleEvents(TURN_LEFT);
+	if (playerDir == direction + 2 || playerDir == direction - 2) {
+		game->handleEvents(TURN_LEFT);
+		game->handleEvents(TURN_LEFT);
+	}
+}
+
+void Bot::pickGoldAndRun() {
+	game->handleEvents(PICKUP_GOLD);
+	findSafePassageToExit();
+}
+
+void Bot::findPath(Coords coords) {
+	//TODO: Pathfinding alghorithm,
+	//that will walk player through,
+	//moveInDirection method
+}
+
+void Bot::findSafePassageToExit() {
+	findPath(Coords(0, game->getMap()->getHeight() - 1));
+}
+
+void Bot::killMonster() {
+	if (checkIfMonsterInFrontOfUs())
+		game->handleEvents(SHOOT_ARROW);
+}
+
+bool Bot::checkIfMonsterInFrontOfUs() {
+	switch (game->getPlayer()->getRotation()) {
+	case UP:
+		for (int i = 0; i < game->getPlayer()->getY(); i++) {
+			if (map[i][game->getPlayer()->getX()].isMonster)
+				return true;
+		}
+		break;
+	case RIGHT:
+		for (int i = game->getPlayer()->getX(); i < game->getMap()->getWidth(); i++) {
+			if (map[game->getPlayer()->getY()][i].isMonster)
+				return true;
+		}
+		break;
+	case DOWN:
+		for (int i = game->getPlayer()->getY(); i < game->getMap()->getHeight(); i++) {
+			if (map[i][game->getPlayer()->getX()].isMonster)
+				return true;
+		}
+		break;
+	case LEFT:
+		for (int i = 0; i < game->getPlayer()->getX(); i++) {
+			if (map[game->getPlayer()->getY()][i].isMonster)
+				return true;
+		}
+		break;
+	}
+}
+
+bool Bot::isSafeFieldAvailable() {
+	//TODO: Check if there is possibility to get to some safe field,
+	//without need to go through not 100% safe fields
+	return false;
+}
+
+Coords Bot::findNearestUnvisitedSafeField() {
+	//TODO: Self Explanatory
+	return Coords(0, 0);
+}
+
+Coords Bot::findNearestLeastDangerousField() {
+	//TODO: If there is no safe field available, 
+	//find nearest field with lowest risk
+	return Coords(0, 0);
+}

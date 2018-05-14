@@ -308,7 +308,7 @@ void Map::fillMap() {
 		randomX = rand() % width;
 		randomY = rand() % height;
 
-		if (randomX != bottomX || randomY != bottomY) {
+		if ((randomX != bottomX || randomY != bottomY) && !field_[randomY][randomX].monster) {
 			correctPosition = true;
 		}
 	}
