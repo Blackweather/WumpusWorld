@@ -215,7 +215,7 @@ void Bot::findPath(Coords coords) {
 	//TODO: Pathfinding alghorithm,
 	//each step by moveInDirection
 
-	// use BFS from findNearestUnvisitedField
+	// use BFS from findNearestUnvisitedField!
 }
 
 void Bot::findSafePassageToExit() {
